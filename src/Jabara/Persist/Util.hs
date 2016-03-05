@@ -6,12 +6,23 @@ module Jabara.Persist.Util (
     , toMap
     , getFromMap
     , dummyKey
+    , getAllEntities
 ) where
 
-import Prelude hiding (lookup)
+import Control.Monad.Reader (ReaderT)
+import Control.Monad.Trans (MonadIO)
+
 import Database.Persist.Sql
 import Data.Maybe (fromJust)
 import Data.Map (Map, fromList, lookup)
+
+import Prelude hiding (lookup)
+
+getAllEntities :: (MonadIO m, PersistQuery (PersistEntityBackend val),
+                         PersistEntity val) =>
+                        ReaderT
+                          (PersistEntityBackend val) m [Entity val]
+getAllEntities = selectList [] []
 
 toRecord :: (Entity record) -> record
 toRecord (Entity _ rec) = rec

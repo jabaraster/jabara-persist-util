@@ -19,6 +19,7 @@ library
                      , persistent-template
                      , persistent
                      , containers
+                     , mtl
 
   exposed-modules:     Jabara.Persist.Util
 

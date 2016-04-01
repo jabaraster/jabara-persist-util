@@ -7,6 +7,7 @@ module Jabara.Persist.Util (
     , getFromMap
     , dummyKey
     , getAllEntities
+    , selectList'
 ) where
 
 import Control.Monad.Reader (ReaderT)
@@ -23,6 +24,14 @@ getAllEntities :: (MonadIO m, PersistQuery (PersistEntityBackend val),
                         ReaderT
                           (PersistEntityBackend val) m [Entity val]
 getAllEntities = selectList [] []
+
+selectList' :: (MonadIO m, PersistQuery (PersistEntityBackend val),
+      PersistEntity val) =>
+     [Filter val]
+     -> [SelectOpt val]
+     -> ReaderT (PersistEntityBackend val) m [val]
+selectList' filters options = selectList filters options 
+    >>= mapM (return . toRecord)
 
 toRecord :: (Entity record) -> record
 toRecord (Entity _ rec) = rec
